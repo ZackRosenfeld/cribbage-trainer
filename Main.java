@@ -7,14 +7,17 @@ public class Main {
 
         Stack testHand = new Stack("testHand");
         Deck testDeck = new Deck("testDeck");
+        Stack discard = new Stack("discard");
 
 
-        dealFinalHand(testDeck, testHand);
+        dealFullHand(testDeck, testHand);
+
+        discard.stackCards.addAll(findBestDiscard(testDeck, testHand));
 
         System.out.println(testHand.stackCards);
+        System.out.println(discard.stackCards);
 
-        System.out.println(scoreFourCards(testHand));
-        System.out.println(findAvgScoreOfFlip(testDeck, testHand));
+
     }
 
     /*
@@ -204,6 +207,42 @@ public class Main {
 
         return flipScore;
 
+    }
+
+    public static List<Card> findBestDiscard(Deck deck, Stack hand) {
+        List<Double> discardScores = new ArrayList<>();
+        List<Stack> discards = new ArrayList<>();
+        for (int discard1 = 0; discard1 < hand.stackCards.size(); discard1++) {
+            for (int discard2 = discard1 + 1; discard2 < hand.stackCards.size(); discard2++) {
+                Stack discard = new Stack("tempDiscardStack");
+
+                discard.stackCards.add(hand.stackCards.get(discard1));
+                discard.stackCards.add(hand.stackCards.get(discard2));
+                hand.stackCards.removeAll(discard.stackCards);
+
+                double handScore = scoreFourCards(hand) + findAvgScoreOfFlip(deck, hand);
+
+                discardScores.add(handScore);
+                discards.add(discard);
+                
+                hand.stackCards.addAll(discard.stackCards);
+            }
+        }
+
+        int maxIndex = 0;
+        double maxScore = discardScores.get(0);
+        int currentIndex = -1;
+
+        for (double score : discardScores) {
+            currentIndex++;
+
+            if (score > maxScore) {
+                maxScore = score;
+                maxIndex = currentIndex;
+            }
+        }
+
+        return discards.get(maxIndex).stackCards;
     }
 
     /*
