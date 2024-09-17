@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,13 +10,24 @@ public class Main {
         Deck testDeck = new Deck("testDeck");
         Stack discard = new Stack("discard");
 
+        Scanner input = new Scanner(System.in);
 
-        dealFullHand(testDeck, testHand);
+        String[] cards = new String[6];
+        for (int i = 0; i < 6; i++) {
+            System.out.println("Enter your card (Muhahahahaha): ");
+            cards[i] = (input.nextLine());
+        }
+
+        System.out.println("cards");
+
+        testDeck.specificDeal(cards, testHand);
 
         discard.stackCards.addAll(findBestDiscard(testDeck, testHand));
 
         System.out.println(testHand.stackCards);
         System.out.println(discard.stackCards);
+
+        System.out.println("Skibidi Toilet");
 
 
     }
@@ -209,6 +221,11 @@ public class Main {
 
     }
 
+    /*
+     * Accepts a hand of 6 cards and the deck that those cards were dealt from
+     * Returns the 2 best cards to discard in order to maximize average score
+     * Currently does not account for crib
+     */
     public static List<Card> findBestDiscard(Deck deck, Stack hand) {
         List<Double> discardScores = new ArrayList<>();
         List<Stack> discards = new ArrayList<>();
